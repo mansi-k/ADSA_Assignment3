@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <stdexcept>
 using namespace std;
+#define ll long long int
 
 template <class T>
 class defaultCompare {
@@ -18,19 +19,19 @@ struct PriorityQ
 private:
     vector<T> A;
     C cmp;
-    int PARENT(int i) {
+    ll PARENT(ll i) {
         return (i - 1) / 2;
     }
-    int LEFT(int i) {
+    ll LEFT(ll i) {
         return (2 * i + 1);
     }
-    int RIGHT(int i) {
+    ll RIGHT(ll i) {
         return (2 * i + 2);
     }
-    void heapify_down(int i) {
-        int left = LEFT(i);
-        int right = RIGHT(i);
-        int smallest = i;
+    void heapify_down(ll i) {
+        ll left = LEFT(i);
+        ll right = RIGHT(i);
+        ll smallest = i;
         if (left < size() && cmp(A[left],A[i])<0)
             smallest = left;
         if (right < size() && cmp(A[right],A[smallest])<0)
@@ -40,7 +41,7 @@ private:
             heapify_down(smallest);
         }
     }
-    void heapify_up(int i) {
+    void heapify_up(ll i) {
         if(i && cmp(A[PARENT(i)],A[i])>0) {
             swap(A[i], A[PARENT(i)]);
             heapify_up(PARENT(i));
@@ -48,7 +49,7 @@ private:
     }
 
 public:
-    unsigned int size() {
+    unsigned ll size() {
         return A.size();
     }
     bool empty() {
@@ -56,7 +57,7 @@ public:
     }
     void push(T key) {
         A.push_back(key);
-        int index = size() - 1;
+        ll index = size() - 1;
         heapify_up(index);
     }
     void pop() {
