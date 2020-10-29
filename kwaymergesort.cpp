@@ -50,7 +50,8 @@ public:
 
     void sortFile() {
         divide_sort();
-        conquer_merge();
+        if(!tempFilesVec.empty())
+            conquer_merge();
     }
 
     void divide_sort() {
@@ -78,7 +79,7 @@ public:
             char chunk_data[this_chunk_size];
             file.read(&chunk_data[0], this_chunk_size);
             string chunk_str = string(chunk_data);
-            cout << "###" << this_chunk_size  << endl;
+//            cout << "###" << this_chunk_size  << endl;
             stringstream ss(chunk_str);
             while (ss.good()) {
                 string substr;
@@ -114,8 +115,32 @@ public:
 //            sort(num_vec.begin(),num_vec.end());
             mergeSort(num_vec,0,num_vec.size()-1);
 //            cout << "sorted" << endl;
-            write_temp_file(num_vec,chunk);
+            if(total_chunks>1) {
+                write_temp_file(num_vec, chunk);
+            }
+            else {
+                write_single_output_file(num_vec);
+            }
         }
+    }
+
+    void write_single_output_file(vector<ll> &num_vec) {
+        int pos = inputFile.find_last_of('/');
+        string opfile;
+        if (pos != string::npos)
+            opfile = inputFile.substr(0,pos);
+        opfile += "/output.txt";
+//        cout << pos << " " << tempfile << endl;
+        ofstream *tempop;
+        tempop = new ofstream(opfile.c_str(), ios::out);
+        for (ll i = 0; i < num_vec.size(); ++i) {
+            if(i==num_vec.size()-1)
+                *tempop << num_vec[i];
+            else
+                *tempop << to_string(num_vec[i]) << ",";
+        }
+        tempop->close();
+        delete tempop;
     }
 
     void write_temp_file(vector<ll> &num_vec,ll chunk_no) {
@@ -129,9 +154,9 @@ public:
         tempop = new ofstream(tempfile.c_str(), ios::out);
         for (ll i = 0; i < num_vec.size(); ++i) {
             if(i==num_vec.size()-1)
-                *tempop << to_string(num_vec[i]);
+                *tempop << num_vec[i];
             else
-                *tempop << to_string(num_vec[i]) << "\n";
+                *tempop << num_vec[i] << "\n";
         }
         tempop->close();
         delete tempop;
@@ -186,7 +211,7 @@ public:
 };
 
 int main() {
-    KwayMergeSort *kwms = new KwayMergeSort("/home/mansi/IIITH/DSA/assgn3/kwaysort/tests/unsorted_file.txt");
+    KwayMergeSort *kwms = new KwayMergeSort("/home/mansi/IIITH/DSA/assgn3/kwaysort/tests/test2.txt");
     kwms->sortFile();
 //    ifstream bigFile("mybigfile.dat");
 //    constexpr ll bufferSize = 1024;
