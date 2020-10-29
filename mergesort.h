@@ -1,10 +1,11 @@
 using namespace std;
+#define ll long long int
 
-int merge_lists(vector<int> &A, long p, long q, long r) {
-    long n1,n2,i,j,k;
+ll merge_lists(vector<ll> &A, ll p, ll q, ll r) {
+    ll n1,n2,i,j,k;
     n1=q-p+1;
     n2=r-q;
-    long L[n1],R[n2];
+    ll L[n1],R[n2];
     for(i=0;i<n1;i++) {
         L[i]=A[p+i];
     }
@@ -28,12 +29,14 @@ int merge_lists(vector<int> &A, long p, long q, long r) {
     }
 }
 
-int mergeSort(vector<int> &A,long p,long r) {
-    long q;
+ll mergeSort(vector<ll> &A,ll p,ll r) {
+//    static ll cnt = 0;
+    ll q;
     if(p<r) {
         q=(p+r)/2;
         mergeSort(A,p,q);
         mergeSort(A,q+1,r);
         merge_lists(A,p,q,r);
     }
+//    cout << "inMS" << cnt++ << endl;
 }
