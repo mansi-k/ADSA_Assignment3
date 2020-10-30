@@ -1,5 +1,6 @@
 #include <iostream>
 #include <bits/stdc++.h>
+#include <climits>
 using namespace std;
 #define ll long long int
 
@@ -120,7 +121,7 @@ void findKLongSb(ll k) {
         cout << str.substr(pos[i],str.length()) << endl;
     }
     for(ll i=0;i<=str.length()-k;i++) {
-        ll minh = 9999;
+        ll minh = LONG_LONG_MAX;
         ll mj = 0;
         for(ll j=i;j<i+k-1;j++) {
 //            cout << "ht" << height[j] << " ";
