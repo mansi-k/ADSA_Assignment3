@@ -3,6 +3,7 @@
 #include <sstream>
 #include <sys/stat.h>
 #include <vector>
+#include <cstdio>
 #include "mergesort.h"
 #include "priorityQ.h"
 
@@ -42,10 +43,12 @@ private:
 
 public:
     string inputFile;
+    string outputFile;
     vector<string> tempFilesVec;
     vector<ifstream*> openTempFilesVec;
-    KwayMergeSort(const string &inFile) {
+    KwayMergeSort(string inFile, string outFile) {
         inputFile = inFile;
+        outputFile = outFile;
     }
 
     void sortFile() {
@@ -68,24 +71,19 @@ public:
         else {
             last_chunk_size = chunk_size;
         }
-//        cout << filestatus.st_size << endl;
-//        cout << total_chunks << endl;
         string prevnum;
         bool intbroken = false;
         for (ll chunk = 0; chunk < total_chunks; ++chunk) {
             vector<ll> num_vec;
-//            cout << "initvec" << num_vec.size() << endl;
             ll this_chunk_size = chunk == total_chunks - 1 ? last_chunk_size : chunk_size;
             char chunk_data[this_chunk_size];
             file.read(&chunk_data[0], this_chunk_size);
             string chunk_str = string(chunk_data);
-//            cout << "###" << this_chunk_size  << endl;
             stringstream ss(chunk_str);
             while (ss.good()) {
                 string substr;
                 getline(ss, substr, ',');
                 if(intbroken) {
-//                    cout << "he" << prevnum << "+" << substr << endl;
                     prevnum += substr;
                     substr = prevnum;
                     intbroken = false;
@@ -94,7 +92,6 @@ public:
                 stringstream toInt(substr);
                 ll num = 0;
                 toInt >> num;
-//                cout << num << ",";
                 num_vec.push_back(num);
                 prevnum = substr;
             }
@@ -102,19 +99,11 @@ public:
                 intbroken = true;
                 prevnum = prevnum.substr(0,prevnum.length()-1);
                 num_vec.pop_back();
-//                cout << chunk_data[this_chunk_size-1] << "here";
             }
             else if(chunk<=total_chunks-1 && chunk_data[this_chunk_size-1]==',') {
                 num_vec.pop_back();
             }
-//            cout << endl << "______________" << endl;
-//            for(auto i=0;i<num_vec.size();i++) {
-//                cout << num_vec[i] << " ";
-//            }
-//            cout << endl;
-//            sort(num_vec.begin(),num_vec.end());
             mergeSort(num_vec,0,num_vec.size()-1);
-//            cout << "sorted" << endl;
             if(total_chunks>1) {
                 write_temp_file(num_vec, chunk);
             }
@@ -125,14 +114,8 @@ public:
     }
 
     void write_single_output_file(vector<ll> &num_vec) {
-        int pos = inputFile.find_last_of('/');
-        string opfile;
-        if (pos != string::npos)
-            opfile = inputFile.substr(0,pos);
-        opfile += "/output.txt";
-//        cout << pos << " " << tempfile << endl;
         ofstream *tempop;
-        tempop = new ofstream(opfile.c_str(), ios::out);
+        tempop = new ofstream(outputFile.c_str(), ios::out);
         for (ll i = 0; i < num_vec.size(); ++i) {
             if(i==num_vec.size()-1)
                 *tempop << num_vec[i];
@@ -149,7 +132,6 @@ public:
         if (pos != string::npos)
             tempfile = inputFile.substr(0,pos);
         tempfile += "."+to_string(chunk_no)+".tmp";
-//        cout << pos << " " << tempfile << endl;
         ofstream *tempop;
         tempop = new ofstream(tempfile.c_str(), ios::out);
         for (ll i = 0; i < num_vec.size(); ++i) {
@@ -172,7 +154,6 @@ public:
         string outPath = path+"/output.txt";
         cout << outPath << endl;
         ofstream *outputFile = new ofstream(outPath.c_str(), ios::out);
-//        priority_queue<FileElement, vector<FileElement>, myComparator> minHeap;
         PriorityQ<FileElement,myComparator> minHeap;
         ll line;
         for (ll i = 0; i < openTempFilesVec.size(); ++i) {
@@ -181,7 +162,12 @@ public:
         }
         while (minHeap.empty() == false) {
             FileElement minElement = minHeap.top();
-            *outputFile << minElement.data << ",";
+            if(minHeap.size()==1) {
+                *outputFile << minElement.data;
+            }
+            else {
+                *outputFile << minElement.data << ",";
+            }
             minHeap.pop();
             *(minElement.iFile) >> line;
             if(*(minElement.iFile)) {
@@ -202,24 +188,18 @@ public:
     void close_temp_files() {
         for (ll i=0; i < openTempFilesVec.size(); ++i) {
             openTempFilesVec[i]->close();
+            remove(tempFilesVec[i].c_str());
             delete openTempFilesVec[i];
         }
-//        for (ll i=0; i < tempFilesVec.size(); ++i) {
-//            remove(tempFilesVec[i].c_str());
-//        }
     }
 };
 
-int main() {
-    KwayMergeSort *kwms = new KwayMergeSort("/home/mansi/IIITH/DSA/assgn3/kwaysort/tests/test2.txt");
+int main(int argc,char ** argv) {
+    if(argc<3) {
+        cout << "Usage : main.cpp <input_file> <output_file>" << endl;
+        return 0;
+    }
+    KwayMergeSort *kwms = new KwayMergeSort(argv[1],argv[2]);
     kwms->sortFile();
-//    ifstream bigFile("mybigfile.dat");
-//    constexpr ll bufferSize = 1024;
-//    unique_ptr<char[]> buffer(new char[bufferSize]);
-//    while(bigFile)
-//    {
-//        bigFile.read(buffer.get(), bufferSize);
-//        // process data in buffer
-//    }
     return 0;
 }
