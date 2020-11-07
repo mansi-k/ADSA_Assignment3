@@ -97,29 +97,29 @@ void getLCP(ll n){
         if (h > 0)
             h--;
     }
-    for(ll i=0;i<n;i++) {
-        cout << height[i] << " ";
-    }
+//    for(ll i=0;i<n;i++) {
+//        cout << height[i] << " ";
+//    }
 }
 
 void findKLongSb(ll k) {
     ll n = str.length();
     init_arrs(n);
     suffixSort(n);
-    for(ll i=0;i<str.length();i++) {
-        cout << pos[i] << " ";
-    }
-    cout << endl;
+//    for(ll i=0;i<str.length();i++) {
+//        cout << pos[i] << " ";
+//    }
+//    cout << endl;
     ll maxh=0, maxi=0;
-    if(k==1) {
-        cout << str.substr(pos[0],1) << endl;
-        return;
-    }
+//    if(k==1) {
+//        cout << str.substr(pos[0],1) << endl;
+//        return;
+//    }
     getLCP(str.length());
-    cout << endl;
-    for(ll i=0;i<=str.length()-k;i++) {
-        cout << str.substr(pos[i],str.length()) << endl;
-    }
+//    cout << endl;
+//    for(ll i=0;i<=str.length()-k;i++) {
+//        cout << str.substr(pos[i],str.length()) << endl;
+//    }
     for(ll i=0;i<=str.length()-k;i++) {
         ll minh = LONG_LONG_MAX;
         ll mj = 0;
@@ -136,7 +136,7 @@ void findKLongSb(ll k) {
         }
     }
     if(maxh>0)
-        cout << endl << maxh << ":" << maxi << " : " << str.substr(maxi,maxh) << endl;
+        cout << str.substr(maxi,maxh) << endl;
 }
 
 int main() {
