@@ -143,6 +143,8 @@ int main() {
     ll k;
     cin >> str;
     cin >> k;
+    if(k==1)
+        cout << str << endl;
     findKLongSb(k);
     return 0;
 }
