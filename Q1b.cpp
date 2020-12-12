@@ -26,17 +26,17 @@ void init_arrs(ll n) {
 }
 
 void suffixSort(ll n){
-    for (ll i=0; i<n; ++i){
+    for(ll i=0; i<n; ++i){
         pos[i] = i;
     }
     sort(pos, pos + n, smaller_first_char);
 
-    for (ll i=0; i<n; ++i){
+    for(ll i=0; i<n; ++i) {
         bh[i] = i == 0 || str[pos[i]] != str[pos[i-1]];
         b2h[i] = false;
     }
 
-    for (ll h = 1; h < n; h <<= 1){
+    for(ll h = 1; h < n; h <<= 1) {
         ll buckets = 0;
         for (ll i=0, j; i < n; i = j){
             j = i + 1;
@@ -44,11 +44,12 @@ void suffixSort(ll n){
             nextr[i] = j;
             buckets++;
         }
-        if (buckets == n) break;
+        if (buckets == n)
+            break;
 
-        for (ll i = 0; i < n; i = nextr[i]){
+        for(ll i = 0; i < n; i = nextr[i]) {
             cnt[i] = 0;
-            for (ll j = i; j < nextr[i]; ++j){
+            for(ll j = i; j < nextr[i]; ++j) {
                 crank[pos[j]] = i;
             }
         }
@@ -137,6 +138,8 @@ void findKLongSb(ll k) {
     }
     if(maxh>0)
         cout << str.substr(maxi,maxh) << endl;
+    else
+        cout << "-1" << endl;
 }
 
 int main() {
@@ -145,6 +148,9 @@ int main() {
     cin >> k;
     if(k==1)
         cout << str << endl;
-    findKLongSb(k);
+    else if(str.length()<k)
+        cout << "-1" << endl;
+    else
+        findKLongSb(k);
     return 0;
 }
